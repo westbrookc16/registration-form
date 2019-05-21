@@ -1,26 +1,23 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
 
+import './App.css';
+import { Route, BrowserRouter as Router } from 'react-router-dom';
+import RegisterContainer from './Register/RegisterContainer';
+import SignIn from './SignIn';
+import Home from './Home';
+import Navigation from './Navigation';
+import '@reach/dialog/styles.css';
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	return (
+		<div className="App">
+			<Router>
+				<Navigation />
+				<Route path="/register" component={RegisterContainer} />
+				<Route path="/signin" component={SignIn} />
+				<Route path="/" exact component={Home} />
+			</Router>
+		</div>
+	);
 }
 
 export default App;
