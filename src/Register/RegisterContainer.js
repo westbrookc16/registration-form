@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import UserContext from './../firebase/UserContext';
-
+import Button from 'react-bootstrap/Button';
 import RegisterForm from './RegisterForm';
 import { lunch, banquet } from './../Constants/Foods';
 const RegisterContainer = () => {
@@ -37,31 +37,54 @@ const RegisterContainer = () => {
 	}
 	const peopleList = people.map((p, idx) => {
 		const { name } = p;
-		return <li key={idx}>{name}</li>;
+		return (
+			<li key={idx}>
+				{name}
+				<br />
+				<Button
+					onClick={e => {
+						showEditPerson(idx);
+					}}
+				>
+					Edit
+				</Button>
+			</li>
+		);
 	});
 	function showAddPerson() {
 		setSelectedPerson({ name: '', age: '' });
 		setShowPerson(true);
+		setEditPersonMode(false);
 	}
 	function addPerson(p) {
 		setPeople(c => {
-			return c.concat(p);
+			return c.concat({ id: c.length, ...p });
 		});
+		setShowPerson(false);
 	}
 	function editPerson(editedPerson, idx) {
 		setPeople(c => {
-			c.map((person, i) => {
-				if (i === idx) {
+			return c.map((person, i) => {
+				if (editedPerson.id === person.id) {
+					console.log('here.');
 					return editedPerson;
 				} else {
 					return person;
 				}
 			});
+			//return c;
 		});
+		setShowPerson(false);
 	}
+	const showEditPerson = idx => {
+		setSelectedPerson(people[idx]);
+		setShowPerson(true);
+		setEditPersonMode(true);
+	};
 	const [tab, setTab] = useState('main');
 	const [showPerson, setShowPerson] = useState(false);
 	const [selectedPerson, setSelectedPerson] = useState({ name: '', age: '' });
+	const [editPersonMode, setEditPersonMode] = useState(false);
 	return (
 		<RegisterForm
 			selectedPerson={selectedPerson}
@@ -69,6 +92,7 @@ const RegisterContainer = () => {
 			handleChange={handleChange}
 			addPerson={addPerson}
 			editPerson={editPerson}
+			editPersonMode={editPersonMode}
 			peopleList={peopleList}
 			registration={registration}
 			tab={tab}

@@ -2,7 +2,7 @@ import React from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from '@reach/tabs';
-import { Dialog } from '@reach/dialog';
+import AriaModal from 'react-aria-modal';
 import Person from './Person';
 function RegisterForm({
 	lunchOptions,
@@ -17,13 +17,12 @@ function RegisterForm({
 	addPerson,
 	editPerson,
 	selectedPerson,
+	editPersonMode,
 	showPerson,
 	showAddPerson,
 }) {
 	const { lunch, banquet, email, name, address, city, state, zip } = registration;
-	/*function showDialog() {
-		alert('here we go.');
-	}*/
+
 	return (
 		<div>
 			<Form
@@ -139,6 +138,7 @@ function RegisterForm({
 						<TabPanel>
 							Add any additional registrants here. Price is $10 for those under 18 and $15 for all others.
 							<br />
+							<ul>{peopleList}</ul>
 							<Button
 								onClick={e => {
 									e.preventDefault();
@@ -148,9 +148,18 @@ function RegisterForm({
 							>
 								add Person
 							</Button>
-							<Dialog isOpen={showPerson}>
-								<Person propPerson={selectedPerson} addPerson={addPerson} />
-							</Dialog>
+							{showPerson ? (
+								<AriaModal titleText="Add Person">
+									<Person
+										propPerson={selectedPerson}
+										addPerson={addPerson}
+										editPerson={editPerson}
+										editPersonMode={editPersonMode}
+									/>
+								</AriaModal>
+							) : (
+								false
+							)}
 						</TabPanel>
 					</TabPanels>
 				</Tabs>

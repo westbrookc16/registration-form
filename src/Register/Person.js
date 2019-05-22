@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-const Person = ({ propPerson, addPerson }) => {
+const Person = ({ propPerson, addPerson, editPerson, editPersonMode }) => {
 	if (propPerson === null) {
 		propPerson = { name: '', age: '' };
 	}
@@ -13,7 +13,7 @@ const Person = ({ propPerson, addPerson }) => {
 		});
 	}
 	const { name, age } = person;
-	alert('person here.');
+
 	return (
 		<div>
 			<Form.Group controlId="personname">
@@ -31,7 +31,8 @@ const Person = ({ propPerson, addPerson }) => {
 			<Button
 				onClick={e => {
 					e.preventDefault();
-					addPerson(person);
+						if (editPersonMode) editPerson(person);
+					else addPerson(person);
 				}}
 			>
 				Submit

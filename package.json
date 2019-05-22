@@ -7,6 +7,7 @@
     "@reach/tabs": "^0.1.5",
     "firebase": "^6.0.2",
     "react": "^16.8.6",
+    "react-aria-modal": "^4.0.0",
     "react-bootstrap": "^1.0.0-beta.8",
     "react-bootstrap-modal": "^4.2.0",
     "react-dom": "^16.8.6",
