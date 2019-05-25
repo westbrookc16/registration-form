@@ -7,8 +7,12 @@ export const useAuthState = auth => {
 		//console.log(auth);
 		const listener = auth.onAuthStateChanged(firebaseUser => {
 			if (firebaseUser) {
-				const currentUser = { uid: firebaseUser.uid, displayName: firebaseUser.displayName };
-				if (!user || currentUser.uid !== user.uid) {
+				const currentUser = {
+					uid: firebaseUser.uid,
+					displayName: firebaseUser.displayName,
+					email: firebaseUser.email,
+				};
+				if (!user || currentUser.uid !== user.uid || user.email !== firebaseUser.email) {
 					setUser(currentUser);
 					localStorage.setItem('user', JSON.stringify(currentUser));
 				}

@@ -5,6 +5,8 @@ import { Tabs, TabList, Tab, TabPanels, TabPanel } from '@reach/tabs';
 import AriaModal from 'react-aria-modal';
 import Person from './Person';
 function RegisterForm({
+	success,
+	setSuccess,
 	lunchOptions,
 
 	banquetOptions,
@@ -12,6 +14,7 @@ function RegisterForm({
 	tab,
 	setTab,
 	registration,
+	addRegistration,
 	handleChange,
 	peopleList,
 	addPerson,
@@ -21,14 +24,27 @@ function RegisterForm({
 	showPerson,
 	showAddPerson,
 }) {
-	const { lunch, banquet, email, name, address, city, state, zip } = registration;
+	const {
+		lunch,
+		banquet,
+		email,
+		name,
+		address,
+		city,
+		state,
+		zip,
+		brailleMonitor,
+		brailleMonitorFormat,
+		childCare,
+		breakfast,
+	} = registration;
 
 	return (
 		<div>
 			<Form
 				onSubmit={e => {
 					e.preventDefault();
-					alert("I'm not ready for you yet.");
+					addRegistration();
 				}}
 			>
 				<Tabs>
@@ -36,6 +52,7 @@ function RegisterForm({
 						<Tab>Main</Tab>
 						<Tab>Food Options</Tab>
 						<Tab>People</Tab>
+						<Tab>Miscellaneous</Tab>
 					</TabList>
 					<TabPanels>
 						<TabPanel>
@@ -133,6 +150,15 @@ function RegisterForm({
 									{banquetOptions}
 								</Form.Control>
 							</Form.Group>
+							<Form.Group controlId="chapterbreakfast">
+								<Form.Check
+									type="checkbox"
+									label="chapter Breakfast:$5"
+									name="breakfast"
+									value={breakfast}
+									onChange={handleChange}
+								/>
+							</Form.Group>
 						</TabPanel>
 
 						<TabPanel>
@@ -161,9 +187,60 @@ function RegisterForm({
 								false
 							)}
 						</TabPanel>
+						<TabPanel>
+							<Form.Group controlId="brailleMonitor">
+								<Form.Label>Subscribe to Braille Monitor</Form.Label>
+								<Form.Check
+									type="checkbox"
+									value={brailleMonitor}
+									onChange={handleChange}
+									name="brailleMonitor"
+								/>
+							</Form.Group>
+							{brailleMonitor && (
+								<Form.Group controlId="brailleMonitorFormat">
+									<Form.Label>Braille Monitor Format</Form.Label>
+									<Form.Control
+										as="select"
+										value={brailleMonitorFormat}
+										onChange={handleChange}
+										name="brailleMonitorFormat"
+									>
+										<option value="">Select one</option>
+										<option>Braille</option>
+										<option>USB</option>
+									</Form.Control>
+								</Form.Group>
+							)}
+							<Form.Group controlId="childCare">
+								<Form.Check
+									type="checkbox"
+									label="Child Care Required?"
+									value={childCare}
+									onChange={handleChange}
+									name="childCare"
+								/>
+							</Form.Group>
+						</TabPanel>
 					</TabPanels>
 				</Tabs>
+				<Button type="submit">Submit</Button>
 			</Form>
+			{success && (
+				<AriaModal titleText="Success!">
+					<div>
+						Your Registration was added successfully.
+						<br />
+						<Button
+							onClick={e => {
+								setSuccess(false);
+							}}
+						>
+							OK
+						</Button>
+					</div>
+				</AriaModal>
+			)}
 		</div>
 	);
 }
