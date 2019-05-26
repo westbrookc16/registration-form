@@ -6,8 +6,45 @@ import { lunch, banquet } from './../Constants/Foods';
 import FirebaseContext from './../firebase/firebase';
 const RegisterContainer = () => {
 	const firebase = useContext(FirebaseContext);
-	//load initial data
+
+	const lunchOptions = createFoodOptions(lunch);
+	const banquetOptions = createFoodOptions(banquet);
+	const [people, setPeople] = useState([]);
 	const user = useContext(UserContext);
+	const [showPerson, setShowPerson] = useState(false);
+	const [selectedPerson, setSelectedPerson] = useState({ name: '', age: '' });
+	const [editPersonMode, setEditPersonMode] = useState(false);
+
+	const [tab, setTab] = useState('main');
+	const [registration, setRegistration] = useState({
+		name: user.displayName,
+		email: user.email,
+		address: '',
+		city: '',
+		state: 'PA',
+		zip: '',
+		lunch: '',
+		banquet: '',
+		breakfast: false,
+		brailleMonitor: false,
+		brailleMonitorFormat: '',
+		childCare: false,
+	});
+	const [success, setSuccess] = useState(false);
+
+	//calculate price
+	const [price, setPrice] = useState(0.0);
+	useEffect(() => {
+		const { breakfast } = registration;
+		let totalPrice = 15;
+		people.forEach(item => {
+			totalPrice += item.age === 'minor' ? 10 : 15;
+		});
+		//alert(chapterBreakfast);
+		totalPrice += breakfast ? 5 : 0;
+		setPrice(totalPrice);
+	}, [registration, people]);
+	//load initial data
 	useEffect(() => {
 		firebase.db
 			.collection('registrations')
@@ -82,31 +119,15 @@ const RegisterContainer = () => {
 	}
 	function createFoodOptions(food) {
 		const foodOptions = food.map(i => {
-			return <option key={i.value} value={i.value}>{`${i.name}-${i.price}`}</option>;
+			return <option key={i.value} value={i.value}>{`${i.name}-$${parseFloat(i.price).toFixed(2)}`}</option>;
 		});
 		return foodOptions;
 	}
-	const lunchOptions = createFoodOptions(lunch);
-	const banquetOptions = createFoodOptions(banquet);
 
-	const [registration, setRegistration] = useState({
-		name: user.displayName,
-		email: user.email,
-		address: '',
-		city: '',
-		state: 'PA',
-		zip: '',
-		lunch: '',
-		banquet: '',
-		breakfast: false,
-		brailleMonitor: false,
-		brailleMonitorFormat: '',
-		childCare: false,
-	});
-	const [success, setSuccess] = useState(false);
-	const [people, setPeople] = useState([]);
 	function handleChange(e) {
-		const { name, value } = e.target;
+		let { name, value } = e.target;
+
+		value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
 		setRegistration(r => {
 			return { ...r, [name]: value };
 		});
@@ -177,12 +198,6 @@ const RegisterContainer = () => {
 		setEditPersonMode(true);
 	};
 
-	const [showPerson, setShowPerson] = useState(false);
-	const [selectedPerson, setSelectedPerson] = useState({ name: '', age: '' });
-	const [editPersonMode, setEditPersonMode] = useState(false);
-
-	const [tab, setTab] = useState('main');
-
 	return (
 		<RegisterForm
 			selectedPerson={selectedPerson}
@@ -201,6 +216,7 @@ const RegisterContainer = () => {
 			addRegistration={addRegistration}
 			success={success}
 			setSuccess={setSuccess}
+			price={price}
 		/>
 	);
 };

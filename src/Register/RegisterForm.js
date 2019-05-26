@@ -4,7 +4,9 @@ import Button from 'react-bootstrap/Button';
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from '@reach/tabs';
 import AriaModal from 'react-aria-modal';
 import Person from './Person';
+
 function RegisterForm({
+	price,
 	success,
 	setSuccess,
 	lunchOptions,
@@ -155,7 +157,7 @@ function RegisterForm({
 									type="checkbox"
 									label="chapter Breakfast:$5"
 									name="breakfast"
-									value={breakfast}
+									checked={breakfast}
 									onChange={handleChange}
 								/>
 							</Form.Group>
@@ -192,7 +194,7 @@ function RegisterForm({
 								<Form.Label>Subscribe to Braille Monitor</Form.Label>
 								<Form.Check
 									type="checkbox"
-									value={brailleMonitor}
+									checked={brailleMonitor === true}
 									onChange={handleChange}
 									name="brailleMonitor"
 								/>
@@ -216,7 +218,7 @@ function RegisterForm({
 								<Form.Check
 									type="checkbox"
 									label="Child Care Required?"
-									value={childCare}
+									checked={childCare}
 									onChange={handleChange}
 									name="childCare"
 								/>
@@ -241,6 +243,9 @@ function RegisterForm({
 					</div>
 				</AriaModal>
 			)}
+			<div aria-live="polite" aria-atomic="true">
+				Total Price: ${parseFloat(price).toFixed(2)}
+			</div>
 		</div>
 	);
 }
