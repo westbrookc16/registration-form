@@ -2,13 +2,15 @@ import React, { useState, useContext, useEffect } from 'react';
 import UserContext from './../firebase/UserContext';
 import Button from 'react-bootstrap/Button';
 import RegisterForm from './RegisterForm';
-import { lunch, banquet } from './../Constants/Foods';
+import { lunches, banquets } from './../Constants/Foods';
 import FirebaseContext from './../firebase/firebase';
+//import { find } from 'underscore';
 const RegisterContainer = () => {
+	const [loading, setLoading] = useState(true);
 	const firebase = useContext(FirebaseContext);
 
-	const lunchOptions = createFoodOptions(lunch);
-	const banquetOptions = createFoodOptions(banquet);
+	const lunchOptions = createFoodOptions(lunches);
+	const banquetOptions = createFoodOptions(banquets);
 	const [people, setPeople] = useState([]);
 	const user = useContext(UserContext);
 	const [showPerson, setShowPerson] = useState(false);
@@ -34,18 +36,9 @@ const RegisterContainer = () => {
 
 	//calculate price
 	const [price, setPrice] = useState(0.0);
-	useEffect(() => {
-		const { breakfast } = registration;
-		let totalPrice = 15;
-		people.forEach(item => {
-			totalPrice += item.age === 'minor' ? 10 : 15;
-		});
-		//alert(chapterBreakfast);
-		totalPrice += breakfast ? 5 : 0;
-		setPrice(totalPrice);
-	}, [registration, people]);
 	//load initial data
 	useEffect(() => {
+		setLoading(true);
 		firebase.db
 			.collection('registrations')
 			.doc(user.uid)
@@ -72,7 +65,23 @@ const RegisterContainer = () => {
 						});
 				}
 			});
+		setLoading(false);
 	}, [firebase.db, user.uid]);
+	useEffect(() => {
+		if (loading) return;
+		const { breakfast, lunch, banquet } = registration;
+		let totalPrice = 15;
+		console.log('price effect running.');
+		if (lunch !== '') totalPrice += lunches.find(i => i.value === lunch).price;
+		if (banquet !== '') totalPrice += banquets.find(i => i.value === banquet).price;
+		people.forEach(item => {
+			totalPrice += item.age === 'minor' ? 10 : 15;
+		});
+		//alert(chapterBreakfast);
+		totalPrice += breakfast ? 5 : 0;
+		setPrice(totalPrice);
+	}, [registration, people, loading]);
+
 	function addRegistration() {
 		firebase.db
 			.collection('registrations')
